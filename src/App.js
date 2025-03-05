@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 const DiceGame = () => {
@@ -6,6 +6,19 @@ const DiceGame = () => {
   const [balance, setBalance] = useState(1000);
   const [lastRoll, setLastRoll] = useState(null);
   const [resultMessage, setResultMessage] = useState("");
+
+  // Load balance from localStorage when the component mounts
+  useEffect(() => {
+    const storedBalance = localStorage.getItem("playerBalance");
+    if (storedBalance) {
+      setBalance(parseFloat(storedBalance));
+    }
+  }, []);
+
+  // Save balance to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("playerBalance", balance);
+  }, [balance]);
 
   const rollDice = () => {
     const roll = Math.floor(Math.random() * 6) + 1; // Roll a dice (1-6)
