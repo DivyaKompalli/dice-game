@@ -3,12 +3,15 @@ const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const cors = require("cors");
 const { ethers } = require("ethers");
+const helmet = require("helmet");
+const path = require("path");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(helmet()); // Add security headers
 
 let playerBalance = 1000;
 
@@ -18,6 +21,9 @@ if (typeof window !== "undefined") {
     playerBalance = parseFloat(storedBalance);
   }
 }
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, "../public")));
 
 app.post("/roll-dice", (req, res) => {
   const { bet } = req.body;
@@ -64,6 +70,12 @@ app.post("/get-balance", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch balance" });
   }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 app.listen(PORT, () => {
