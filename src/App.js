@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 
-function App() {
+const DiceGame = () => {
+  const [betAmount, setBetAmount] = useState(0);
+  const [balance, setBalance] = useState(1000);
+  const [lastRoll, setLastRoll] = useState(null);
+  const [resultMessage, setResultMessage] = useState("");
+
+  const rollDice = () => {
+    const roll = Math.floor(Math.random() * 6) + 1; // Roll a dice (1-6)
+    setLastRoll(roll);
+
+    if (roll > 3) {
+      // You win if you roll more than 3
+      const winAmount = betAmount * 2; // Simple win calculation
+      setBalance(balance + winAmount);
+      setResultMessage(`You rolled a ${roll}. You win $${winAmount}!`);
+    } else {
+      setBalance(balance - betAmount);
+      setResultMessage(`You rolled a ${roll}. You lose.`);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Provably Fair Dice Game</h1>
+      <p>Balance: ${balance}</p>
+      <div className="input-container">
+        <input
+          type="number"
+          value={betAmount}
+          onChange={(e) => setBetAmount(Number(e.target.value))}
+          placeholder="Enter your bet"
+          min="0"
+          style={{ width: "150px" }}
+        />
+        <button onClick={rollDice} style={{ marginTop: "10px" }}>
+          Roll Dice
+        </button>
+      </div>
+      {lastRoll !== null && <p>You rolled a {lastRoll}.</p>}
+      <p>{resultMessage}</p>
     </div>
   );
-}
+};
 
-export default App;
+export default DiceGame;
