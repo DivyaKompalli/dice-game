@@ -6,16 +6,12 @@ const DiceGame = () => {
   const [balance, setBalance] = useState(1000);
   const [lastRoll, setLastRoll] = useState(null);
   const [resultMessage, setResultMessage] = useState("");
-
-  // Load balance from localStorage when the component mounts
   useEffect(() => {
     const storedBalance = localStorage.getItem("playerBalance");
     if (storedBalance) {
       setBalance(parseFloat(storedBalance));
     }
   }, []);
-
-  // Save balance to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("playerBalance", balance);
   }, [balance]);
@@ -26,7 +22,7 @@ const DiceGame = () => {
 
     if (roll > 3) {
       // You win if you roll more than 3
-      const winAmount = betAmount * 2; // Simple win calculation
+      const winAmount = betAmount * 2;
       setBalance(balance + winAmount);
       setResultMessage(`You rolled a ${roll}. You win $${winAmount}!`);
     } else {
